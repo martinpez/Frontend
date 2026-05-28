@@ -229,32 +229,77 @@
     </div>
 
     <!-- Times -->
-    <div class="flex flex-col gap-3 w-full" id="time-grid">
+    <div class="grid grid-cols-2 gap-3 w-full" id="time-grid">
 
-      <button class="time-card glass-card flex items-center gap-4 px-6 py-4 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+      <button class="time-card glass-card flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'11:00 AM','🌤️','Brunch especial')">
+        <span class="text-2xl">🌤️</span>
+        <div class="text-left">
+          <div class="font-display font-semibold text-base text-primary">11:00 AM</div>
+          <div class="text-xs text-on-surface-variant">Brunch especial</div>
+        </div>
+      </button>
+
+      <button class="time-card glass-card flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
         onclick="selectTime(this,'12:30 PM','☀️','Almuerzo tranquilo')">
-        <span class="text-3xl">☀️</span>
+        <span class="text-2xl">☀️</span>
         <div class="text-left">
-          <div class="font-display font-semibold text-xl text-primary">12:30 PM</div>
-          <div class="text-sm text-on-surface-variant">Almuerzo tranquilo</div>
+          <div class="font-display font-semibold text-base text-primary">12:30 PM</div>
+          <div class="text-xs text-on-surface-variant">Almuerzo tranquilo</div>
         </div>
       </button>
 
-      <button class="time-card glass-card flex items-center gap-4 px-6 py-4 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+      <button class="time-card glass-card flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'2:00 PM','🌞','Tarde relajada')">
+        <span class="text-2xl">🌞</span>
+        <div class="text-left">
+          <div class="font-display font-semibold text-base text-primary">2:00 PM</div>
+          <div class="text-xs text-on-surface-variant">Tarde relajada</div>
+        </div>
+      </button>
+
+      <button class="time-card glass-card flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'4:00 PM','🍵','Merienda dulce')">
+        <span class="text-2xl">🍵</span>
+        <div class="text-left">
+          <div class="font-display font-semibold text-base text-primary">4:00 PM</div>
+          <div class="text-xs text-on-surface-variant">Merienda dulce</div>
+        </div>
+      </button>
+
+      <button class="time-card glass-card flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
         onclick="selectTime(this,'6:00 PM','🌇','Tarde romántica')">
-        <span class="text-3xl">🌇</span>
+        <span class="text-2xl">🌇</span>
         <div class="text-left">
-          <div class="font-display font-semibold text-xl text-primary">6:00 PM</div>
-          <div class="text-sm text-on-surface-variant">Tarde romántica</div>
+          <div class="font-display font-semibold text-base text-primary">6:00 PM</div>
+          <div class="text-xs text-on-surface-variant">Tarde romántica</div>
         </div>
       </button>
 
-      <button class="time-card glass-card flex items-center gap-4 px-6 py-4 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
-        onclick="selectTime(this,'8:00 PM','🌙','Cena a la luz de velas')">
-        <span class="text-3xl">🌙</span>
+      <button class="time-card glass-card flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'7:30 PM','🌆','Al caer el sol')">
+        <span class="text-2xl">🌆</span>
         <div class="text-left">
-          <div class="font-display font-semibold text-xl text-primary">8:00 PM</div>
-          <div class="text-sm text-on-surface-variant">Cena a la luz de velas</div>
+          <div class="font-display font-semibold text-base text-primary">7:30 PM</div>
+          <div class="text-xs text-on-surface-variant">Al caer el sol</div>
+        </div>
+      </button>
+
+      <button class="time-card glass-card flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'8:00 PM','🌙','Cena a la luz de velas')">
+        <span class="text-2xl">🌙</span>
+        <div class="text-left">
+          <div class="font-display font-semibold text-base text-primary">8:00 PM</div>
+          <div class="text-xs text-on-surface-variant">Cena a la luz de velas</div>
+        </div>
+      </button>
+
+      <button class="time-card glass-card flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'9:30 PM','✨','Noche de estrellas')">
+        <span class="text-2xl">✨</span>
+        <div class="text-left">
+          <div class="font-display font-semibold text-base text-primary">9:30 PM</div>
+          <div class="text-xs text-on-surface-variant">Noche de estrellas</div>
         </div>
       </button>
 
@@ -411,12 +456,8 @@ function selectTime(el, time, icon, sub) {
 
 /* ────── Build final ────── */
 function buildFinal() {
-  // next Saturday
-  const now = new Date();
-  const diff = (6 - now.getDay() + 7) % 7 || 7;
-  const sat  = new Date(now);
-  sat.setDate(now.getDate() + diff);
-  const dateStr = sat.toLocaleDateString('es-CO', { weekday:'long', day:'numeric', month:'long' });
+  // Fixed date: Saturday May 30
+  const dateStr = 'Sábado, 30 de mayo';
 
   // food emoji map
   const emojiMap = { 'Hamburguesa':'🍔', 'Pizza':'🍕', 'Lasaña':'🫕' };
