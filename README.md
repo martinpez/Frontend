@@ -1,1 +1,473 @@
-# Frontend
+# <!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Para Salomé 💌</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50%       { transform: translateY(-12px) rotate(4deg); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50%       { transform: translateY(-8px) rotate(-3deg); }
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(28px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes heartbeat {
+    0%,100% { transform:scale(1); }
+    14%     { transform:scale(1.18); }
+    28%     { transform:scale(1); }
+    42%     { transform:scale(1.12); }
+    56%     { transform:scale(1); }
+  }
+  @keyframes petal-fall {
+    0%   { transform:translateY(-80px) rotate(0deg); opacity:0; }
+    8%   { opacity:.45; }
+    92%  { opacity:.45; }
+    100% { transform:translateY(110vh) rotate(400deg); opacity:0; }
+  }
+  @keyframes confetti-fall {
+    0%   { transform:translateY(-20px) rotate(0deg); opacity:1; }
+    100% { transform:translateY(110vh) rotate(720deg); opacity:0; }
+  }
+  @keyframes sparkle {
+    0%,100% { opacity:.6; transform:scale(1); }
+    50%     { opacity:1;  transform:scale(1.25); }
+  }
+
+  .animate-float  { animation: float  3.2s ease-in-out infinite; }
+  .animate-floatB { animation: floatB 4.1s ease-in-out infinite; }
+  .animate-heartbeat { animation: heartbeat 2.4s ease-in-out infinite; }
+
+  .glass-card {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .screen { display:none; }
+  .screen.active {
+    display:flex;
+    animation: fadeUp .65s cubic-bezier(.22,.68,0,1.2) both;
+  }
+
+  body {
+    overflow-x:hidden;
+    background:
+      radial-gradient(ellipse at top right,    #fadadd 0%, #fbf9f8 45%),
+      radial-gradient(ellipse at bottom left,  #d7e6d7 0%, #fbf9f8 45%);
+    min-height:100vh;
+  }
+
+  /* petal */
+  .petal {
+    position:fixed; pointer-events:none; z-index:0;
+    border-radius:50% 0 50% 0;
+    animation: petal-fall linear infinite;
+  }
+
+  /* no button free-floating */
+  #no-btn {
+    transition: top .18s cubic-bezier(.175,.885,.32,1.275),
+                left .18s cubic-bezier(.175,.885,.32,1.275);
+  }
+
+  /* food card selected ring */
+  .food-card.selected {
+    border-color: #f9c6c6 !important;
+    background: rgba(249,198,198,.15) !important;
+  }
+  /* time card selected */
+  .time-card.selected {
+    border-color: #bccabc !important;
+    background: rgba(188,202,188,.18) !important;
+  }
+</style>
+<script>
+  tailwind.config = {
+    darkMode:"class",
+    theme:{
+      extend:{
+        colors:{
+          "primary":           "#70585b",
+          "on-primary":        "#ffffff",
+          "primary-container": "#fadadd",
+          "on-primary-container":"#765e61",
+          "secondary":         "#5c5d6e",
+          "on-secondary":      "#ffffff",
+          "secondary-container":"#e1e1f5",
+          "tertiary":          "#546256",
+          "on-tertiary":       "#ffffff",
+          "tertiary-container":"#d7e6d7",
+          "surface":           "#fbf9f8",
+          "surface-variant":   "#e4e2e2",
+          "surface-container": "#efeded",
+          "surface-container-low":"#f5f3f3",
+          "on-surface":        "#1b1c1c",
+          "on-surface-variant":"#4f4445",
+          "outline-variant":   "#d2c3c4",
+        },
+        fontFamily:{
+          display: ["Playfair Display","serif"],
+          body:    ["Plus Jakarta Sans","sans-serif"],
+        }
+      }
+    }
+  }
+</script>
+</head>
+<body class="font-body text-on-surface">
+
+<!-- ── Petals background ── -->
+<div id="petals-root"></div>
+
+<!-- ── Confetti canvas ── -->
+<canvas id="confetti" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+<!-- ── Header ── -->
+<header class="fixed top-0 w-full z-40 bg-surface/70 backdrop-blur-md shadow-sm shadow-primary-container/30">
+  <div class="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
+    <span class="font-display italic text-xl text-primary tracking-tight">Para Salomé 💌</span>
+    <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1;font-size:26px;">favorite</span>
+  </div>
+</header>
+
+<!-- decorative floaters -->
+<div class="fixed top-28 left-8 text-primary-container opacity-40 animate-float pointer-events-none" style="animation-delay:.3s">
+  <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;font-size:72px;">favorite</span>
+</div>
+<div class="fixed bottom-24 right-8 text-tertiary-container opacity-40 animate-floatB pointer-events-none" style="animation-delay:1.2s">
+  <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;font-size:60px;">local_florist</span>
+</div>
+<div class="fixed top-1/2 left-1/4 text-secondary-container opacity-25 pointer-events-none" style="animation:sparkle 3s ease-in-out infinite;animation-delay:.8s">
+  <span class="material-symbols-outlined" style="font-size:36px;">auto_awesome</span>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 1 — HERO
+════════════════════════════════════ -->
+<section id="s1" class="screen active min-h-screen flex-col items-center justify-center text-center px-6 pt-24 pb-16 relative z-10">
+  <div class="max-w-xl mx-auto space-y-8">
+
+    <!-- floating emoji -->
+    <div class="animate-heartbeat text-6xl select-none">💌</div>
+
+    <div class="space-y-4">
+      <h1 class="font-display font-bold text-4xl md:text-5xl text-primary leading-tight tracking-tight">
+        Salomé,<br><em>¿quisieras salir<br>a comer conmigo?</em>
+      </h1>
+      <p class="text-on-surface-variant text-lg leading-relaxed max-w-md mx-auto">
+        He estado pensando en esto y me encantaría compartir un momento especial contigo. 🌸
+      </p>
+    </div>
+
+    <!-- buttons -->
+    <div class="relative flex items-center justify-center gap-5 h-20">
+      <!-- YES -->
+      <button onclick="goTo('s2')"
+        class="bg-primary text-on-primary px-10 py-3.5 rounded-full font-semibold text-base shadow-lg shadow-primary-container/50 hover:-translate-y-1 active:scale-95 transition-all duration-200 z-10">
+        ¡Sí, claro! 🌸
+      </button>
+      <!-- NO — escapes on hover/touch -->
+      <button id="no-btn"
+        class="fixed bg-surface-variant text-on-surface-variant px-8 py-3.5 rounded-full font-semibold text-base z-10"
+        style="top:50%;left:60%;transform:translate(-50%,-50%)">
+        No, gracias
+      </button>
+    </div>
+
+    <!-- image card -->
+    <div class="glass-card rounded-2xl overflow-hidden shadow-2xl shadow-primary-container/30 border border-primary-container/30 animate-floatB">
+      <div class="w-full h-56 bg-gradient-to-br from-primary-container via-secondary-container to-tertiary-container flex items-center justify-center">
+        <div class="text-center space-y-2 opacity-70">
+          <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1;font-size:72px;">favorite</span>
+          <p class="font-display italic text-primary text-lg">Una noche especial</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     SCREEN 2 — FOOD
+════════════════════════════════════ -->
+<section id="s2" class="screen min-h-screen flex-col items-center justify-center text-center px-6 pt-24 pb-16 relative z-10">
+  <div class="max-w-3xl mx-auto space-y-8 w-full">
+    <div class="space-y-2">
+      <div class="text-5xl animate-float select-none">🍽️</div>
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-primary">¡Sabía que dirías que <em>sí</em>!</h2>
+      <p class="text-on-surface-variant">¿Qué te gustaría comer en nuestra cita? ✨</p>
+    </div>
+
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 w-full" id="food-grid">
+
+    </div>
+
+    <button id="food-next" onclick="goTo('s3')"
+      class="hidden bg-primary text-on-primary px-10 py-3.5 rounded-full font-semibold text-base shadow-lg shadow-primary-container/40 hover:-translate-y-1 transition-all duration-200 mx-auto">
+      Siguiente →
+    </button>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     SCREEN 3 — DATE & TIME
+════════════════════════════════════ -->
+<section id="s3" class="screen min-h-screen flex-col items-center justify-center text-center px-6 pt-24 pb-16 relative z-10">
+  <div class="max-w-lg mx-auto space-y-8 w-full">
+    <div class="space-y-2">
+      <div class="text-5xl animate-floatB select-none">📅</div>
+      <h2 class="font-display font-bold text-3xl md:text-4xl text-primary">¿Cuándo nos <em>vemos</em>?</h2>
+      <p class="text-on-surface-variant" id="s3-sub">¡Perfecto! Elige el horario que mejor te quede</p>
+    </div>
+
+    <!-- Times -->
+    <div class="flex flex-col gap-3 w-full" id="time-grid">
+
+      <button class="time-card glass-card flex items-center gap-4 px-6 py-4 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'12:30 PM','☀️','Almuerzo tranquilo')">
+        <span class="text-3xl">☀️</span>
+        <div class="text-left">
+          <div class="font-display font-semibold text-xl text-primary">12:30 PM</div>
+          <div class="text-sm text-on-surface-variant">Almuerzo tranquilo</div>
+        </div>
+      </button>
+
+      <button class="time-card glass-card flex items-center gap-4 px-6 py-4 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'6:00 PM','🌇','Tarde romántica')">
+        <span class="text-3xl">🌇</span>
+        <div class="text-left">
+          <div class="font-display font-semibold text-xl text-primary">6:00 PM</div>
+          <div class="text-sm text-on-surface-variant">Tarde romántica</div>
+        </div>
+      </button>
+
+      <button class="time-card glass-card flex items-center gap-4 px-6 py-4 rounded-2xl border-2 border-outline-variant hover:border-tertiary-container hover:-translate-y-0.5 transition-all duration-200"
+        onclick="selectTime(this,'8:00 PM','🌙','Cena a la luz de velas')">
+        <span class="text-3xl">🌙</span>
+        <div class="text-left">
+          <div class="font-display font-semibold text-xl text-primary">8:00 PM</div>
+          <div class="text-sm text-on-surface-variant">Cena a la luz de velas</div>
+        </div>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+     SCREEN 4 — FINAL
+════════════════════════════════════ -->
+<section id="s4" class="screen min-h-screen flex-col items-center justify-center text-center px-6 pt-24 pb-16 relative z-10">
+  <div class="max-w-xl mx-auto space-y-8">
+
+    <div class="w-28 h-28 bg-primary-container rounded-full flex items-center justify-center mx-auto animate-heartbeat">
+      <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1;font-size:64px;">favorite</span>
+    </div>
+
+    <div class="space-y-3">
+      <h2 class="font-display font-bold text-4xl md:text-5xl text-primary">¡Todo listo,<br><em>Salomé!</em></h2>
+      <p class="text-on-surface font-semibold text-xl">No puedo esperar para verte ❤️</p>
+    </div>
+
+    <!-- summary pills -->
+    <div class="glass-card rounded-2xl border border-primary-container/40 p-6 space-y-3 shadow-lg shadow-primary-container/20">
+      <div id="pill-food"  class="flex items-center gap-3 bg-primary-container/30 rounded-xl px-4 py-2.5 text-sm font-semibold text-primary"></div>
+      <div id="pill-date"  class="flex items-center gap-3 bg-tertiary-container/30 rounded-xl px-4 py-2.5 text-sm font-semibold text-tertiary"></div>
+      <div id="pill-time"  class="flex items-center gap-3 bg-secondary-container/30 rounded-xl px-4 py-2.5 text-sm font-semibold text-secondary"></div>
+    </div>
+
+    <!-- message -->
+    <div class="glass-card rounded-2xl border border-outline-variant/40 p-6 shadow-md">
+      <p class="font-display italic text-primary text-lg leading-relaxed">
+        "Cada momento contigo es una historia que quiero vivir una y otra vez.<br>
+        Espero que esta cita sea el inicio de muchas más 🌹"
+      </p>
+    </div>
+
+    <!-- final image placeholder -->
+    <div class="glass-card rounded-2xl overflow-hidden shadow-xl border border-primary-container/30">
+      <div class="w-full h-52 bg-gradient-to-br from-primary-container via-tertiary-container to-secondary-container flex items-center justify-center">
+        <div class="text-center opacity-60 space-y-1">
+          <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1;font-size:56px;">local_florist</span>
+          <p class="font-display italic text-primary">Será una noche increíble</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="relative z-10 bg-surface-container-low py-8 mt-12 text-center space-y-1">
+  <p class="font-display italic text-primary text-base">Para Salomé</p>
+  <p class="text-xs text-on-surface-variant">Made with love 💖</p>
+</footer>
+
+<script>
+/* ────── Init ────── */
+window.addEventListener('DOMContentLoaded', buildFoodGrid);
+
+/* ────── Petals ────── */
+const pColors = ['#f9c6c6','#fddbb8','#e0d4f5','#c5e8d8','#fce4ec','#d7e6d7'];
+const root = document.getElementById('petals-root');
+for (let i = 0; i < 26; i++) {
+  const p = document.createElement('div');
+  p.className = 'petal';
+  const s = 8 + Math.random() * 12;
+  p.style.cssText = `
+    width:${s}px; height:${s * 1.4}px;
+    left:${Math.random() * 100}%;
+    background:${pColors[Math.floor(Math.random() * pColors.length)]};
+    opacity:.4;
+    animation-duration:${8 + Math.random() * 10}s;
+    animation-delay:${-Math.random() * 12}s;
+  `;
+  root.appendChild(p);
+}
+
+/* ────── No button escape ────── */
+let escapes = 0;
+const noBtn = document.getElementById('no-btn');
+
+function runAway() {
+  escapes++;
+  const bw = noBtn.offsetWidth  || 130;
+  const bh = noBtn.offsetHeight || 48;
+  const maxX = window.innerWidth  - bw  - 20;
+  const maxY = window.innerHeight - bh  - 20;
+  const nx = 20 + Math.random() * maxX;
+  const ny = 20 + Math.random() * maxY;
+  noBtn.style.left = nx + 'px';
+  noBtn.style.top  = ny + 'px';
+  noBtn.style.transform = 'none';
+  if (escapes >= 4)  noBtn.textContent = '¡Detente! 😅';
+  if (escapes >= 8)  noBtn.style.display = 'none';
+}
+noBtn.addEventListener('mouseenter', runAway);
+noBtn.addEventListener('touchstart',  e => { e.preventDefault(); runAway(); });
+
+/* ────── Screen transitions ────── */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const next = document.getElementById(id);
+  next.classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ────── Food list ────── */
+const foods = [
+  ['🍔','Hamburguesa'],['🍕','Pizza'],['🫕','Lasaña'],
+  ['🍣','Sushi'],['🌮','Tacos'],['🍜','Ramen'],
+  ['🥩','Carne a la brasa'],['🍝','Espagueti'],['🫔','Shawarma'],
+  ['🥗','Ensalada César'],['🍛','Curry'],['🌯','Burrito'],
+  ['🍱','Bento box'],['🥟','Dumplings'],['🧆','Falafel'],
+  ['🍤','Camarones'],['🦞','Langosta'],['🥞','Pancakes'],
+  ['🧇','Waffles'],['🍦','Helado'],['🎂','Pastel'],
+  ['🍩','Donuts'],['🧁','Cupcakes'],['🍫','Fondue de chocolate'],
+];
+
+function buildFoodGrid() {
+  const grid = document.getElementById('food-grid');
+  grid.innerHTML = '';
+  foods.forEach(([emoji, name]) => {
+    const btn = document.createElement('button');
+    btn.className = 'food-card group glass-card py-4 px-2 rounded-2xl shadow-sm border-2 border-outline-variant hover:border-primary-container hover:-translate-y-1 transition-all duration-200 flex flex-col items-center gap-2';
+    btn.innerHTML = `
+      <span class="text-3xl group-hover:scale-125 transition-transform duration-200">${emoji}</span>
+      <span class="font-semibold text-xs text-primary leading-tight text-center">${name}</span>
+    `;
+    btn.onclick = () => selectFood(btn, name);
+    grid.appendChild(btn);
+  });
+}
+
+/* ────── Food selection ────── */
+let chosenFood = null;
+function selectFood(el, name) {
+  document.querySelectorAll('.food-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  chosenFood = name;
+  const btn = document.getElementById('food-next');
+  btn.classList.remove('hidden');
+  btn.classList.add('flex');
+}
+
+/* ────── Time selection ────── */
+let chosenTime = null;
+function selectTime(el, time, icon, sub) {
+  document.querySelectorAll('.time-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  chosenTime = { time, icon, sub };
+  setTimeout(() => buildFinal(), 380);
+}
+
+/* ────── Build final ────── */
+function buildFinal() {
+  // next Saturday
+  const now = new Date();
+  const diff = (6 - now.getDay() + 7) % 7 || 7;
+  const sat  = new Date(now);
+  sat.setDate(now.getDate() + diff);
+  const dateStr = sat.toLocaleDateString('es-CO', { weekday:'long', day:'numeric', month:'long' });
+
+  // food emoji map
+  const emojiMap = { 'Hamburguesa':'🍔', 'Pizza':'🍕', 'Lasaña':'🫕' };
+  const foodEmoji = emojiMap[chosenFood] || '🍽️';
+
+  document.getElementById('pill-food').innerHTML =
+    `<span>${foodEmoji}</span><span>${chosenFood} — nuestra elección perfecta</span>`;
+  document.getElementById('pill-date').innerHTML =
+    `<span>🗓️</span><span>${dateStr.charAt(0).toUpperCase() + dateStr.slice(1)}</span>`;
+  document.getElementById('pill-time').innerHTML =
+    `<span>${chosenTime.icon}</span><span>${chosenTime.time} — ${chosenTime.sub}</span>`;
+
+  goTo('s4');
+  launchConfetti();
+}
+
+/* ────── Confetti ────── */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const cols = ['#f9c6c6','#fddbb8','#c5e8d8','#e0d4f5','#f4a3b3','#bccabc'];
+  const pieces = Array.from({ length: 160 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    r: 4 + Math.random() * 7,
+    d: 1.8 + Math.random() * 2.8,
+    color: cols[Math.floor(Math.random() * cols.length)],
+    angle: 0,
+    tiltSpd: .08 + Math.random() * .18,
+  }));
+
+  let frame = 0;
+  (function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.y += p.d;
+      p.angle += p.tiltSpd;
+      const tilt = Math.sin(p.angle) * 14;
+      if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+      ctx.beginPath();
+      ctx.ellipse(p.x + tilt, p.y, p.r * .55, p.r, tilt * Math.PI / 180, 0, 2 * Math.PI);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    });
+    if (++frame < 380) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  })();
+}
+</script>
+</body>
+</html>
